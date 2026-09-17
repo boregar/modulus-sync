@@ -1,11 +1,11 @@
 <?php
 // modulus-sync
 // update module/author items of AUFO's Omeka S instance from a CSV file using the REST API
-// v0.3 - © 2026 Christian Morel (boregar) - Apache-2.0 license
+// v0.4 - © 2026 Christian Morel (boregar) - Apache-2.0 license
 
 // ---------------------------------------- validity check
 
-$version = '0.3';
+$version = '0.4';
 $switches = [];
 $curSwitch = null;
 
@@ -253,7 +253,7 @@ function createModule($moduleIdentifier, $row) {
   $payload['dcterms:title'][0]['@value'] = $row['Name'];
   $payload['dcterms:identifier'][0]['@value'] = $moduleIdentifier;
   $payload['schema:softwareVersion'][0]['@value'] = $row['Last version'];
-  $payload['schema:releaseDate'][0]['@value'] = $row['Last update'];
+  $payload['schema:releaseDate'][0]['@value'] = $row['Last update'] ? sprintf('%s+00:00', substr($row['Last update'], 0, 19)) : '1970-01-01';
   $payload['schema:creditText'][0]['@value'] = $row['Author'];
   $payload['schema:author'][0]['@id'] = "$apiEndpoint/$authorId";
   $payload['schema:author'][0]['value_resource_id'] = $authorId;
@@ -288,7 +288,11 @@ function updateModule($moduleIdentifier, $row) {
   // feed metadata structure
   $payload = $modules[$moduleIdentifier]['payload'];
   $payload['schema:softwareVersion'][0]['@value'] = $row['Last version'];
-  $payload['schema:releaseDate'][0]['@value'] = $row['Last update'];
+  $payload['schema:releaseDate'][0]['type'] = 'numeric:timestamp';
+  $payload['schema:releaseDate'][0]['property_id'] = 1515;
+  $payload['schema:releaseDate'][0]['property_label'] = 'releaseDate';
+  $payload['schema:releaseDate'][0]['is_public'] = true;
+  $payload['schema:releaseDate'][0]['@value'] = $row['Last update'] ? sprintf('%s+00:00', substr($row['Last update'], 0, 19)) : '1970-01-01';
 
   // update item
   $content = updateItem($moduleId, $payload);

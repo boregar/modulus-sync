@@ -6,7 +6,7 @@ The script updates a set of metadata related to modules/authors items via the Om
 
 The script is written in PHP (tested with version 8.3) and runs from the command line.
 
-Current version: v0.3
+Current version: v0.4
 
 This script is still under active development. It is recommended to wait for the v1.0 release before using it on a production environment.
 
